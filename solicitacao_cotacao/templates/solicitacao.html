@@ -12,6 +12,18 @@
             </div>
         {% endfor %}
     {% endif %}
+    <div class="card">
+        <div class="card-body">
+            <div class="mb-3">
+                <label for="titulo">Budget (Mensal):</label>
+                <input class="form-control" type="number" id="budget" name="budgetm">
+            </div>
+            <div class="mb-3">
+                <label for="titulo">Budget (Anual):</label>
+                <input class="form-control" type="number" id="budget" name="budgeta">
+            </div>
+        </div>
+      </div>
     <h2 class="text-center">Criar Solicitação de Orçamento</h2>
     <form method="post">
         {% csrf_token %}
@@ -19,14 +31,7 @@
             <label for="titulo">Título:</label>
             <input class="form-control" type="text" id="titulo" name="titulo" required>
         </div>
-        <div class="mb-3">
-            <label for="titulo">Budget (Mensal):</label>
-            <input class="form-control" type="number" id="budget" name="budgetm">
-        </div>
-        <div class="mb-3">
-            <label for="titulo">Budget (Anual):</label>
-            <input class="form-control" type="number" id="titulo" name="budgeta">
-        </div>
+        
         <div class="mb-3">
             <label for="descricao">Descrição:</label>
             <textarea class="form-control" id="descricao" name="descricao" required></textarea>

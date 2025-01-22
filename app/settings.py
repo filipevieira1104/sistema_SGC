@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'autenticacao',
     'solicitacao_cotacao',
     'contrato',
+    'budget',
 ]
 
 MIDDLEWARE = [
