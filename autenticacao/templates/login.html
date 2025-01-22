@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center mb-4">Realize seu Login</h2>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {{message.tags}}">
+                        {{message}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Nome de Usuário</label>
+                    <input class="form-control" type="text" id="username" name="username" placeholder="Nome de Usuário" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Senha</label>
+                    <input class="form-control" type="password" id="password" name="password" placeholder="Senha" required>
+                </div>
+                <div class="d-grid">
+                    <button class="btn btn-primary" type="submit">Entrar</button>
+                </div>
+            </form>
+            <div class="text-center mt-3">
+                <p><strong>Não possui uma conta?</strong> <a href="{% url 'registro' %}">Realize seu cadastro</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
