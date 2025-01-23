@@ -6,26 +6,38 @@
 <div class="container p-5">
     {% if messages %}
         {% for message in messages %}
-            <div class="alert {{message.tags}}">
-                {{message}}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+            <script>
+                // Exibe o SweetAlert2 quando há uma mensagem de sucesso
+                Swal.fire({
+                    title: 'Sucesso!',
+                    text: '{{ message }}',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </script>
         {% endfor %}
     {% endif %}
-    <div class="card">
-        <div class="card-body">
-            <div class="mb-3">
-                <label for="titulo">Budget (Mensal):</label>
-                <input class="form-control" type="number" id="budget" name="budgetm">
-            </div>
-            <div class="mb-3">
-                <label for="titulo">Budget (Anual):</label>
-                <input class="form-control" type="number" id="budget" name="budgeta">
-            </div>
+    
+    <h2 class="text-center">Preencher Budget</h2>
+    <form method="POST" action="{% url 'preencher_budget' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="budgeta">Budget (Anual):</label>
+            <input class="form-control" type="number" id="budgeta" name="budgeta" 
+                {% if budget %} value="{{ budget.budget_anual }}" {% endif %} required>
         </div>
-      </div>
+        <div class="mb-3">
+            <label for="budgetm">Budget (Mensal):</label>
+            <input class="form-control" type="number" id="budgetm" name="budgetm"
+                {% if budget %} value="{{ budget.budget_mensal }}" {% endif %} required>
+        </div>
+        <button class="btn btn-primary" type="submit">Salvar Budget</button>
+    </form>
+
+    <hr>
+
     <h2 class="text-center">Criar Solicitação de Orçamento</h2>
-    <form method="post">
+    <form method="POST" action="{% url 'criar_solicitacao' %}">
         {% csrf_token %}
         <div class="mb-3">
             <label for="titulo">Título:</label>
@@ -38,6 +50,7 @@
         </div>
         <button class="btn btn-primary" type="submit">Criar Solicitação</button>
     </form>
+
     <hr>
     <h2 class="text-center">Minhas Cotações</h2>
     <table class="table table-hover">
@@ -50,25 +63,24 @@
                 <th scope="col">Título da cotação</th>
                 <th scope="col">Anexo do contrato</th>
             </tr>
-            
         </thead>
         <tbody>
-            <tr>
-            {% for i in contratos %}    
-              <th scope="row">{{ i.id }}</th>
-              <td>{{ i.fornecedor }}</td>
-              <td>{{ i.data_contrato }}</td>
-              <td>{{ i.valor_proposta }}</td>
-              <td>{{ i.solicitacao.titulo }}</td>
-              <td>
-                {% if i.anexo %}
-                <a href="{{ i.anexo.url }}" class="btn btn-success btn-sm" target="_blank">Baixar</a>
-                {% else %}
-                <span class="text-muted">Não disponível</span>
-                {% endif %}
-             </td> 
-             {% endfor %} 
-            </tr>
+            {% for i in contratos %}
+                <tr>
+                    <th scope="row">{{ i.id }}</th>
+                    <td>{{ i.fornecedor }}</td>
+                    <td>{{ i.data_contrato }}</td>
+                    <td>{{ i.valor_proposta }}</td>
+                    <td>{{ i.solicitacao.titulo }}</td>
+                    <td>
+                        {% if i.anexo %}
+                            <a href="{{ i.anexo.url }}" class="btn btn-success btn-sm" target="_blank">Baixar</a>
+                        {% else %}
+                            <span class="text-muted">Não disponível</span>
+                        {% endif %}
+                    </td> 
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>

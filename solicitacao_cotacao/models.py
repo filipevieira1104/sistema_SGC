@@ -16,3 +16,11 @@ class SolicitacaoCotacao(models.Model):
 
     def __str__(self):
         return self.titulo
+    
+class Budget(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    budget_anual = models.DecimalField(max_digits=10, decimal_places=2)
+    budget_mensal = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.budget_anual} / {self.budget_mensal}"   
