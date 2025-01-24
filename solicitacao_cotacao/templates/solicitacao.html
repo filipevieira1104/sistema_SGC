@@ -21,20 +21,84 @@
     <h2 class="text-center">Preencher Budget</h2>
     <form method="POST" action="{% url 'preencher_budget' %}">
         {% csrf_token %}
-        <div class="mb-3">
-            <label for="budgeta">Budget (Anual):</label>
-            <input class="form-control" type="number" id="budgeta" name="budgeta" 
-                {% if budget %} value="{{ budget.budget_anual }}" {% endif %} required>
+
+        <div class="card p-3 mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <!-- Campo para Budget Anual -->
+                    <div class="col-md-5 mb-3">
+                        <label for="budgeta" class="form-label">Budget (Anual):</label>
+                        <input class="form-control" type="number" id="budgeta" name="budgeta" 
+                            {% if budget %} value="{{ budget.budget_anual }}" {% endif %} required 
+                            {% if budget %} readonly {% endif %}>
+                    </div>
+
+                    <!-- Campo para Budget Mensal -->
+                    <div class="col-md-5 mb-3">
+                        <label for="budgetm" class="form-label">Budget (Mensal):</label>
+                        <input class="form-control" type="number" id="budgetm" name="budgetm"
+                            {% if budget %} value="{{ budget.budget_mensal }}" {% endif %} required 
+                            {% if budget %} readonly {% endif %}>
+                    </div>
+
+                    <!-- Tooltip de Informações -->
+                    <div class="col-md-2 d-flex align-items-center">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="Motivo: Este valor representa o orçamento mensal requerido." class="ms-2">
+                            <i class="bi bi-info-circle" style="font-size: 1.5rem;"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Botões para Salvar ou Atualizar -->
+                <div class="d-flex justify-content-end mt-3">
+                    {% if budget %}
+                        <!-- Se já existe budget, mostrar botão de atualizar -->
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#updateBudgetModal">Atualizar Budget</button>
+                    {% else %}
+                        <!-- Se não existe budget, mostrar botão de salvar -->
+                        <button class="btn btn-primary" type="submit">Salvar Budget</button>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="budgetm">Budget (Mensal):</label>
-            <input class="form-control" type="number" id="budgetm" name="budgetm"
-                {% if budget %} value="{{ budget.budget_mensal }}" {% endif %} required>
-        </div>
-        <button class="btn btn-primary" type="submit">Salvar Budget</button>
     </form>
 
-    <hr>
+    <!-- Modal para Atualizar Budget -->
+    <div class="modal fade" id="updateBudgetModal" tabindex="-1" aria-labelledby="updateBudgetModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateBudgetModalLabel">Atualizar Budget</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'preencher_budget' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="budgeta_modal" class="form-label">Budget (Anual):</label>
+                            <input class="form-control" type="number" id="budgeta_modal" name="budgeta" 
+                                {% if budget %} value="{{ budget.budget_anual }}" {% endif %} required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="budgetm_modal" class="form-label">Budget (Mensal):</label>
+                            <input class="form-control" type="number" id="budgetm_modal" name="budgetm"
+                                {% if budget %} value="{{ budget.budget_mensal }}" {% endif %} required>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inicializando o Tooltip do Bootstrap -->
+    <script>
+        // Ativar todos os tooltips do Bootstrap
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    </script>
 
     <h2 class="text-center">Criar Solicitação de Orçamento</h2>
     <form method="POST" action="{% url 'criar_solicitacao' %}">
