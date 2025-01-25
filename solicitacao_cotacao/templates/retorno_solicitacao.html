@@ -5,38 +5,145 @@
 {% block title %}Minhas Solicitações{% endblock %}
 
 {% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Small Box 1: Budget Anual -->
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <div class="small-box">
+                <div class="inner">
+                    <h3>R$ 500.000</h3>
+                    <p>Budget Anual</p>
+                </div>
+                <div class="icon">
+                    <i class="fa-solid fa-sack-dollar"></i>
+                </div>
+                <a href="#" class="small-box-footer">Mais informações <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
 
-<div class="card">
-    <div class="card-header">
-        <h2 class="text-center">Minhas Cotações</h2>
+        <!-- Small Box 2: Budget Mensal -->
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <div class="small-box">
+                <div class="inner">
+                    <h3>R$ 50.000</h3>
+                    <p>Budget Mensal</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <a href="#" class="small-box-footer">Mais informações <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+
+        <!-- Small Box 3: Orçamentos Aprovados -->
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <div class="small-box">
+                <div class="inner">
+                    <h3>3</h3>
+                    <p>Orçamentos Aprovados</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-thumbs-up"></i>
+                </div>
+                <a href="#" class="small-box-footer">Ver mais <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+
+        <!-- Small Box 4: Novos Membros -->
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <div class="small-box">
+                <div class="inner">
+                    <h3>2.000</h3>
+                    <p>Budget Restante</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <a href="#" class="small-box-footer">Ver detalhes <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        {% for solicitacao in solicitacoes %}
-        <div class="list-group-item">
-            <h5 class="mb-1">{{ solicitacao.titulo }}</h5>
-            <p class="mb-1">{{ solicitacao.descricao }}</p>
-            <small>Status: {{ solicitacao.status }}</small>
-            <div class="mt-3">
-                <h6>Orçamentos</h6>
-                <div class="row">
-                    {% for contrato in solicitacao.contrato_set.all %}
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-header">
-                                    Fornecedor: {{ contrato.fornecedor }}
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text">Valor da proposta: R$ {{ contrato.valor_proposta|intcomma }}</p>
-                                    <p class="card-text">Data do contrato: {{ contrato.data_contrato|date:"d/m/Y" }}</p>
-                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#detalhesModal{{ contrato.id }}">Ver Detalhes</button>
-                                </div>
+</div>
+
+
+<div class="container mb-2">
+    <div class="row">
+        <div class="col-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Minhas Cotações</h2>
+                </div>
+                <div class="card-body">
+                    {% for solicitacao in page_obj %}
+                    <div class="list-group-item">
+                        <h5 class="mb-1">{{ solicitacao.titulo }}</h5>
+                        <p class="mb-1">{{ solicitacao.descricao }}</p>
+                        <small>Status: {{ solicitacao.status }}</small>
+                        <div class="mt-3">
+                            <h6>Orçamentos</h6>
+                            <div class="row">
+                                <!-- Paginando os contratos por solicitação -->
+                                {% for contrato in solicitacao.contrato_set.all %}
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                Fornecedor: {{ contrato.fornecedor }}
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="card-text">Valor da proposta: R$ {{ contrato.valor_proposta|intcomma }}</p>
+                                                <p class="card-text">Data do contrato: {{ contrato.data_contrato|date:"d/m/Y" }}</p>
+                                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#detalhesModal{{ contrato.id }}">Ver Detalhes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Paginação com o Paginador do Bootstrap 5 -->
+                            <div class="d-flex justify-content-center">
+                                <nav>
+                                    <ul class="pagination">
+                                        <!-- Página Anterior -->
+                                        {% if page_obj.has_previous %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page=1" aria-label="Primeira">
+                                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                                </a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Anterior">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                        
+                                        <!-- Páginas Numeradas -->
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">{{ page_obj.number }}</span>
+                                        </li>
+
+                                        <!-- Página Seguinte -->
+                                        {% if page_obj.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Próxima">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Última">
+                                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </nav>
                             </div>
                         </div>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
-    {% endfor %}
     </div>
 </div>
 

@@ -76,6 +76,10 @@ button.btn-close {
     color: red;
 }
 
+.modal-body p {
+    color: var(--cor-principal);
+}
+
 /* Customizando o input */
 input.form-control, textarea.form-control {
     border-color: var(--cor-secundaria);
@@ -146,4 +150,46 @@ input.form-control:focus, textarea.form-control:focus {
 .card-header {
     background-color: var(--cor-principal);
     color: var(--cor-secundaria);
+}
+
+.small-box {
+    background-color: var(--cor-principal);
+    position: relative;
+    display: block;
+    margin-bottom: 1rem;
+    padding: 20px;
+    color: #fff;
+    border: 3px solid #65C98D;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.small-box:hover {
+    transform: scale(1.05) rotate(-3deg); /* Aumenta e rotaciona a caixa */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Aumenta a sombra ao passar o mouse */
+}
+
+.small-box .inner {
+    padding: 10px;
+}
+
+.small-box .icon {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    font-size: 3rem;
+    opacity: 0.15;
+}
+
+.small-box-footer {
+    display: block;
+    position: absolute;
+    bottom: 1px;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    text-align: center;
+    color: #fff;
 }

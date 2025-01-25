@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.paginator import Paginator
 from .models import SolicitacaoCotacao, Budget
 from contrato.models import Contrato
 
@@ -78,8 +79,19 @@ def preencher_budget(request):
 
     return render(request, 'solicitacao.html', {'budget': budget})
 
+from django.core.paginator import Paginator
+from django.shortcuts import render
+from .models import SolicitacaoCotacao
+
 def minhas_solicitacoes(request):
+    # Recupera todas as solicitações do usuário
+    solicitacoes = SolicitacaoCotacao.objects.filter(usuario=request.user)
     contratos = Contrato.objects.filter(solicitacao__usuario=request.user)
-    solicitacoes = SolicitacaoCotacao.objects.all()
-    if request.method == "GET":
-        return render(request, 'retorno_solicitacao.html', {'contratos': contratos, 'solicitacoes': solicitacoes})
+
+    # Paginando as solicitações (1 solicitação por página)
+    paginator = Paginator(solicitacoes, 1)  # 1 solicitação por página
+    page_number = request.GET.get('page')  # Pegando o número da página da URL
+    page_obj = paginator.get_page(page_number)  # Pega a página solicitada
+
+    # Passando as solicitações paginadas para o template
+    return render(request, 'retorno_solicitacao.html', {'page_obj': page_obj, 'contratos': contratos})
