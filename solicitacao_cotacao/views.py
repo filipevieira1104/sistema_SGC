@@ -1,15 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
 from .models import SolicitacaoCotacao, Budget
 from contrato.models import Contrato
 
 @login_required
 def criar_solicitacao(request):
-    contratos = Contrato.objects.filter(solicitacao__usuario=request.user)
     if request.method == "GET":
-        return render(request, 'solicitacao.html', {'contratos': contratos})
+        return render(request, 'solicitacao.html')
     elif request.method == "POST":
         titulo = request.POST.get('titulo')
         descricao = request.POST.get('descricao')
@@ -79,3 +77,9 @@ def preencher_budget(request):
         return redirect('preencher_budget')  # Redireciona para a página de orçamento
 
     return render(request, 'solicitacao.html', {'budget': budget})
+
+def minhas_solicitacoes(request):
+    contratos = Contrato.objects.filter(solicitacao__usuario=request.user)
+    solicitacoes = SolicitacaoCotacao.objects.all()
+    if request.method == "GET":
+        return render(request, 'retorno_solicitacao.html', {'contratos': contratos, 'solicitacoes': solicitacoes})

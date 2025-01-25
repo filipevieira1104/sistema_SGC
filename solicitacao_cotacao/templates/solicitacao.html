@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block title %}Criar Solicitação{% endblock %}
 
 {% block content %}
-<div class="container p-5">
+<div class="container p-3">
     {% if messages %}
         {% for message in messages %}
             <script>
@@ -18,11 +19,12 @@
         {% endfor %}
     {% endif %}
     
-    <h2 class="text-center">Preencher Budget</h2>
     <form method="POST" action="{% url 'preencher_budget' %}">
         {% csrf_token %}
-
-        <div class="card p-3 mb-3">
+        <div class="card mb-5">
+            <div class="card-header">
+                <h2 class="text-center">Preencher Budget</h2>
+            </div>
             <div class="card-body">
                 <div class="row">
                     <!-- Campo para Budget Anual -->
@@ -43,20 +45,30 @@
 
                     <!-- Tooltip de Informações -->
                     <div class="col-md-2 d-flex align-items-center">
-                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="Motivo: Este valor representa o orçamento mensal requerido." class="ms-2">
+                        <span type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="O valor do budget é necessário para negociarmos com o fornecedor." class="ms-2">
                             <i class="bi bi-info-circle" style="font-size: 1.5rem;"></i>
                         </span>
                     </div>
                 </div>
 
                 <!-- Botões para Salvar ou Atualizar -->
-                <div class="d-flex justify-content-end mt-3">
+                <div class="d-flex justify-content-end mt-3 mb-3">
                     {% if budget %}
                         <!-- Se já existe budget, mostrar botão de atualizar -->
                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#updateBudgetModal">Atualizar Budget</button>
                     {% else %}
                         <!-- Se não existe budget, mostrar botão de salvar -->
                         <button class="btn btn-primary" type="submit">Salvar Budget</button>
+                    {% endif %}
+                </div>
+                
+                <div class="alert alert-warning">
+                    {% if budget %}
+                        <p class="text-center"><strong>Último valor salvo</strong></p>
+                        <i class="bi bi-cash-coin"></i> <strong>Budget Anual:</strong> R$ {{ budget.budget_anual | intcomma }}<br>
+                        <i class="bi bi-cash-coin"></i> <strong>Budget Mensal:</strong> R$ {{ budget.budget_mensal | intcomma }}
+                    {% else %}
+                        <strong>Não há budget salvo ainda.</strong>
                     {% endif %}
                 </div>
             </div>
@@ -100,52 +112,25 @@
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
     </script>
 
-    <h2 class="text-center">Criar Solicitação de Orçamento</h2>
-    <form method="POST" action="{% url 'criar_solicitacao' %}">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label for="titulo">Título:</label>
-            <input class="form-control" type="text" id="titulo" name="titulo" required>
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-center">Criar Solicitação de Orçamento</h2>
         </div>
-        
-        <div class="mb-3">
-            <label for="descricao">Descrição:</label>
-            <textarea class="form-control" id="descricao" name="descricao" required></textarea>
+        <div class="card-body">
+            <form method="POST" action="{% url 'criar_solicitacao' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="titulo">Título:</label>
+                    <input class="form-control" type="text" id="titulo" name="titulo" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="descricao">Descrição:</label>
+                    <textarea class="form-control" id="descricao" name="descricao" required></textarea>
+                </div>
+                <button class="btn btn-primary" type="submit">Criar Solicitação</button>
+            </form>
         </div>
-        <button class="btn btn-primary" type="submit">Criar Solicitação</button>
-    </form>
-
-    <hr>
-    <h2 class="text-center">Minhas Cotações</h2>
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">Número do contrato</th>
-                <th scope="col">Fornecedor</th>
-                <th scope="col">Data Contrato</th>
-                <th scope="col">Valor da proposta</th>
-                <th scope="col">Título da cotação</th>
-                <th scope="col">Anexo do contrato</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for i in contratos %}
-                <tr>
-                    <th scope="row">{{ i.id }}</th>
-                    <td>{{ i.fornecedor }}</td>
-                    <td>{{ i.data_contrato }}</td>
-                    <td>{{ i.valor_proposta }}</td>
-                    <td>{{ i.solicitacao.titulo }}</td>
-                    <td>
-                        {% if i.anexo %}
-                            <a href="{{ i.anexo.url }}" class="btn btn-success btn-sm" target="_blank">Baixar</a>
-                        {% else %}
-                            <span class="text-muted">Não disponível</span>
-                        {% endif %}
-                    </td> 
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    </div>
 </div>
 {% endblock %}

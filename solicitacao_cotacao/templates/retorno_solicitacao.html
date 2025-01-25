@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Minhas Solicitações{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="text-center">Minhas Cotações</h2>
+    </div>
+    <div class="card-body">
+        {% for solicitacao in solicitacoes %}
+        <div class="list-group-item">
+            <h5 class="mb-1">{{ solicitacao.titulo }}</h5>
+            <p class="mb-1">{{ solicitacao.descricao }}</p>
+            <small>Status: {{ solicitacao.status }}</small>
+            <div class="mt-3">
+                <h6>Orçamentos</h6>
+                <div class="row">
+                    {% for contrato in solicitacao.contrato_set.all %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-header">
+                                    Fornecedor: {{ contrato.fornecedor }}
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Valor da proposta: R$ {{ contrato.valor_proposta|intcomma }}</p>
+                                    <p class="card-text">Data do contrato: {{ contrato.data_contrato|date:"d/m/Y" }}</p>
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#detalhesModal{{ contrato.id }}">Ver Detalhes</button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+
+{% for contrato in contratos %}
+    <!-- Modal para exibir os detalhes do orçamento -->
+    <div class="modal fade" id="detalhesModal{{ contrato.id }}" tabindex="-1" aria-labelledby="detalhesModalLabel{{ contrato.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detalhesModalLabel{{ contrato.id }}">Detalhes da Cotação</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Fornecedor:</h6>
+                    <p>{{ contrato.fornecedor }}</p>
+                    <h6>Valor da Proposta:</h6>
+                    <p>R$ {{ contrato.valor_proposta|intcomma }}</p>
+                    <h6>Especificações Técnicas:</h6>
+                    <p>{{ contrato.especificacoes_tecnicas }}</p>
+                    <h6>Anexo do Contrato:</h6>
+                    {% if contrato.anexo %}
+                        <a href="{{ contrato.anexo.url }}" target="_blank" class="btn btn-primary">Baixar Anexo</a>
+                    {% else %}
+                        <p class="text-muted">Não disponível</p>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+{% endblock %}

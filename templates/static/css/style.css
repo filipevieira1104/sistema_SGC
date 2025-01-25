@@ -1,3 +1,93 @@
+/* Cor Principal */
+:root {
+    --cor-principal: #12274B; /* Cor de fundo e elementos principais */
+    --cor-secundaria: #65C98D; /* Cor para letras, ícones e bordas */
+}
+
+/* Cor do fundo e elementos principais */
+body {
+    background-color: #12274B; /* Cor de fundo principal */
+    background-image: url("../img/Elemento_Onda.png"); /* Imagem de fundo */
+    background-size: cover; /* A imagem cobre toda a tela */
+    background-position: center; /* A imagem será centralizada */
+    background-repeat: no-repeat; /* A imagem não vai se repetir */
+    position: relative; /* Para garantir que os elementos sobreponham a imagem */
+    color: #fff; /* Cor do texto, para garantir contraste com o fundo */
+}
+
+/* Cabeçalhos e títulos */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--cor-secundaria);
+}
+
+/* Links */
+a {
+    color: var(--cor-secundaria);
+    text-decoration: none; /* Remover o sublinhado */
+}
+
+a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* Botoes */
+.btn-primary {
+    background-color: var(--cor-principal);
+    border-color: var(--cor-principal);
+}
+
+button.btn-close {
+    color: var(--cor-secundaria);
+    fill: var(--cor-secundaria);
+}
+
+.btn-primary:hover {
+    background-color: var(--cor-secundaria);
+    border-color: var(--cor-secundaria);
+}
+
+/* Borda e ícones */
+.border-custom, .border-custom:hover {
+    border-color: var(--cor-secundaria) !important;
+}
+
+.icon-custom {
+    color: var(--cor-secundaria);
+}
+
+/* Personalização de tooltips */
+.tooltip-inner {
+    background-color: var(--cor-secundaria);
+}
+
+.tooltip-arrow {
+    border-top-color: var(--cor-secundaria);
+}
+
+/* Modais */
+.modal-content {
+    background-color: #fff;
+    border-color: var(--cor-secundaria);
+}
+
+.modal-header {
+    background-color: var(--cor-principal);
+    color: red;
+}
+
+/* Customizando o input */
+input.form-control, textarea.form-control {
+    border-color: var(--cor-secundaria);
+    color: var(--cor-secundaria);
+}
+
+input.form-control:focus, textarea.form-control:focus {
+    border-color: var(--cor-principal);
+    box-shadow: 0 0 0 0.25rem rgba(18, 39, 75, 0.25);
+}
+
+
 .notification-badge {
     position: absolute;
     top: 10px;
@@ -11,4 +101,49 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Aplicando sombra nos cards */
+.card {
+    transition: box-shadow 0.3s ease-in-out; /* Transição suave */
+    border: 3px solid #65C98D;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(23, 189, 89, 1.0); /* Sombra personalizada com a cor --cor-secundaria */
+}
+
+.navbar {
+    background-color: var(--cor-secundaria) !important; /* Cor secundária */
+}
+
+.nav-link {
+    color: #fff; /* Cor branca para os links */
+}
+
+.nav-link:hover {
+    color: #12274B; /* Cor principal para o hover */
+}
+
+.navbar-toggler-icon {
+    background-color: #fff; /* Ícone de toggle branco */
+}
+
+.notification-badge {
+    background-color: #12274B; /* Cor para o badge de notificação */
+}
+
+.dropdown-menu {
+    background-color: var(--cor-secundaria); /* Cor do menu dropdown */
+    color: #fff;
+}
+
+.dropdown-item:hover {
+    background-color: #12274B; /* Hover para o item do dropdown */
+    color: #fff;
+}
+
+.card-header {
+    background-color: var(--cor-principal);
+    color: var(--cor-secundaria);
 }
