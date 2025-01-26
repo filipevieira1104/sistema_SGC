@@ -61,16 +61,6 @@
                         <button class="btn btn-primary" type="submit">Salvar Budget</button>
                     {% endif %}
                 </div>
-                
-                <div class="alert alert-warning">
-                    {% if budget %}
-                        <p class="text-center"><strong>Último valor salvo</strong></p>
-                        <i class="bi bi-cash-coin"></i> <strong>Budget Anual:</strong> R$ {{ budget.budget_anual | intcomma }}<br>
-                        <i class="bi bi-cash-coin"></i> <strong>Budget Mensal:</strong> R$ {{ budget.budget_mensal | intcomma }}
-                    {% else %}
-                        <strong>Não há budget salvo ainda.</strong>
-                    {% endif %}
-                </div>
             </div>
         </div>
     </form>
@@ -112,6 +102,7 @@
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
     </script>
 
+    <!-- Criar Solicitação de Orçamento -->
     <div class="card">
         <div class="card-header">
             <h2 class="text-center">Criar Solicitação de Orçamento</h2>

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -25,14 +25,6 @@ def criar_solicitacao(request):
         messages.success(request, 'Solicitação de orçamento criada com sucesso!')
         return redirect('criar_solicitacao')
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import Budget
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import Budget
-
 @login_required
 def preencher_budget(request):
     # Verifica se já existe um orçamento para o usuário
@@ -42,21 +34,9 @@ def preencher_budget(request):
         budget = None
 
     if request.method == 'POST':
-        # Obtém os valores dos campos ou mantém os existentes caso estejam vazios
+        # Obtém os valores dos campos de orçamento
         budgeta = request.POST.get('budgeta', None)
         budgetm = request.POST.get('budgetm', None)
-
-        # Se os valores estiverem vazios, mantém os valores já preenchidos
-        if not budgeta:
-            budgeta = budget.budget_anual if budget else None
-        if not budgetm:
-            budgetm = budget.budget_mensal if budget else None
-
-        # Se o usuário clicou em "Alterar Budget", o campo será desbloqueado
-        if 'alterar' in request.POST:
-            # Permite a edição dos campos
-            budgeta = None
-            budgetm = None
 
         # Se não houver nenhum budget salvo, cria um novo
         if not budget:
@@ -66,23 +46,17 @@ def preencher_budget(request):
             budget.budget_anual = budgeta
             budget.budget_mensal = budgetm
 
+        # Salva o orçamento e verifica erros
         try:
             budget.save()
-            if 'alterar' in request.POST:
-                messages.success(request, "Budget atualizado com sucesso!")
-            else:
-                messages.success(request, "Budget salvo com sucesso!")
+            messages.success(request, "Budget salvo com sucesso!")
         except ValueError as e:
             messages.error(request, f"Erro ao salvar budget: {e}")
 
-        return redirect('preencher_budget')  # Redireciona para a página de orçamento
-
+        
     return render(request, 'solicitacao.html', {'budget': budget})
 
-from django.core.paginator import Paginator
-from django.shortcuts import render
-from .models import SolicitacaoCotacao
-
+@login_required
 def minhas_solicitacoes(request):
     # Recupera todas as solicitações do usuário
     solicitacoes = SolicitacaoCotacao.objects.filter(usuario=request.user)
@@ -93,5 +67,26 @@ def minhas_solicitacoes(request):
     page_number = request.GET.get('page')  # Pegando o número da página da URL
     page_obj = paginator.get_page(page_number)  # Pega a página solicitada
 
+    # Recupera os contratos aprovados
+    contratos_aprovados = Contrato.objects.filter(solicitacao__usuario=request.user, aprovado=True)
+    
+    # Conta o número de orçamentos aprovados
+    quantidade_orcamentos_aprovados = contratos_aprovados.count()
+
+    # Recupera o orçamento do usuário
+    try:
+        budget = Budget.objects.get(usuario=request.user)
+    except Budget.DoesNotExist:
+        budget = None
+
     # Passando as solicitações paginadas para o template
-    return render(request, 'retorno_solicitacao.html', {'page_obj': page_obj, 'contratos': contratos})
+    return render(request, 'retorno_solicitacao.html', {'page_obj': page_obj, 'contratos': contratos, 'contratos_aprovados': contratos_aprovados, 'quantidade_orcamentos_aprovados': quantidade_orcamentos_aprovados, 'budget': budget})
+
+
+@login_required
+def aprovar_orcamento(request, contrato_id):
+    contrato = get_object_or_404(Contrato, id=contrato_id)
+    contrato.aprovado = True
+    contrato.save()
+    messages.success(request, "Orçamento aprovado com sucesso!")
+    return redirect('minhas_solicitacoes')
