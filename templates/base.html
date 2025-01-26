@@ -12,6 +12,7 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
+    {% if user.is_authenticated %}
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -38,12 +39,21 @@
                     </li>
                     <!-- Notification Bell -->
                     <li class="nav-item position-relative">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-bell" style="font-size: 1.5rem;"></i>
                             {% if new_orcamentos %}
-                            <span class="notification-badge">{{ new_orcamentos }}</span>
+                                <span class="notification-badge">{{ new_orcamentos }}</span>
+                            {% else %}
+                                <span class="notification-badge">0</span>
                             {% endif %}
                         </a>
+                        <ul class="dropdown-menu dropdown-menu-end" style="max-width: 320px; word-wrap: break-word;">
+                            {% if new_orcamentos %}
+                                <li><a class="dropdown-item" href="{% url 'minhas_solicitacoes' %}">Olá {{request.user.username}}, você tem {{ new_orcamentos }} novos orçamentos.</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="#">Sem notificações novas.</a></li>
+                            {% endif %}
+                        </ul>
                     </li>
                     <!-- Profile Dropdown -->
                     <li class="nav-item dropdown">
@@ -61,6 +71,7 @@
             </div>
         </div>
     </nav>
+    {% endif %}
 
     <!-- Content Block -->
     <div class="container mt-4">

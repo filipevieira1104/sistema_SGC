@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'autenticacao',
     'solicitacao_cotacao',
     'contrato',
+    'notificacao',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +57,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'notificacao.context_processors.notificacoes_na_navbar',
             ],
         },
     },

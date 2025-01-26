@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from .models import SolicitacaoCotacao, Budget
 from contrato.models import Contrato
+from notificacao.models import Notificacao
 
 @login_required
 def criar_solicitacao(request):
@@ -58,6 +59,8 @@ def preencher_budget(request):
 
 @login_required
 def minhas_solicitacoes(request):
+    # Marcando as notificações como lidas ao acessar a página
+    Notificacao.objects.filter(usuario=request.user, lido=False).update(lido=True)
     # Recupera todas as solicitações do usuário
     solicitacoes = SolicitacaoCotacao.objects.filter(usuario=request.user)
     contratos = Contrato.objects.filter(solicitacao__usuario=request.user)
