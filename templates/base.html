@@ -48,8 +48,10 @@
                             {% endif %}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" style="max-width: 320px; word-wrap: break-word;">
-                            {% if new_orcamentos %}
+                            {% if new_orcamentos > 1 %}
                                 <li><a class="dropdown-item" href="{% url 'minhas_solicitacoes' %}">Olá {{request.user.username}}, você tem {{ new_orcamentos }} novos orçamentos.</a></li>
+                            {% elif new_orcamentos == 1 %}
+                                <li><a class="dropdown-item" href="{% url 'minhas_solicitacoes' %}">Olá {{request.user.username}}, você tem {{ new_orcamentos }} novo orçamento.</a></li>    
                             {% else %}
                                 <li><a class="dropdown-item" href="#">Sem notificações novas.</a></li>
                             {% endif %}
