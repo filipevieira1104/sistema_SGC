@@ -48,10 +48,10 @@ def login_view(request):
             login(request, user)
             return redirect('criar_solicitacao')
         else:
-            messages.add_message(request, constants.ERROR, 'Credenciais Inválidas')
+            messages.error(request, 'Credenciais Inválidas')
     return redirect('login')        
 
 def logout_view(request):
     logout(request)
-    messages.add_message(request, constants.INFO, 'Para acessar o sistema novamente, realize seu login!')
+    messages.add_message(request, constants.WARNING, 'Para acessar o sistema novamente, realize seu login!')
     return redirect('login')  

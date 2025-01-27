@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.contrib.auth.models import User
 from .models import SolicitacaoCotacao, Budget
 from contrato.models import Contrato
 from notificacao.models import Notificacao
@@ -18,11 +19,20 @@ def criar_solicitacao(request):
             messages.warning(request, 'Preencha todos os campos')
             return redirect('criar_solicitacao')
         
-        SolicitacaoCotacao.objects.create(
+        solicitacao = SolicitacaoCotacao.objects.create(
             usuario=request.user,
             titulo=titulo,
             descricao=descricao
         )
+
+        # Criando a notificação para os administradores
+        admins = User.objects.filter(is_superuser=True)  # Pega os administradores
+        for admin in admins:
+            Notificacao.objects.create(
+                usuario=admin,
+                mensagem=f"Novo pedido: Solicitação de orçamento: {solicitacao.titulo}."
+            )
+
         messages.success(request, 'Solicitação de orçamento criada com sucesso!')
         return redirect('criar_solicitacao')
 
@@ -62,8 +72,12 @@ def minhas_solicitacoes(request):
     # Marcando as notificações como lidas ao acessar a página
     Notificacao.objects.filter(usuario=request.user, lido=False).update(lido=True)
     # Recupera todas as solicitações do usuário
-    solicitacoes = SolicitacaoCotacao.objects.filter(usuario=request.user)
+    solicitacoes = SolicitacaoCotacao.objects.filter(usuario=request.user).order_by('id')
     contratos = Contrato.objects.filter(solicitacao__usuario=request.user)
+
+    # Verificando se já existe um orçamento aprovado para cada solicitação
+    for solicitacao in solicitacoes:
+        solicitacao.orcamento_aprovado = solicitacao.contrato_set.filter(aprovado=True).exists()
 
     # Paginando as solicitações (1 solicitação por página)
     paginator = Paginator(solicitacoes, 1)  # 1 solicitação por página
@@ -89,7 +103,18 @@ def minhas_solicitacoes(request):
 @login_required
 def aprovar_orcamento(request, contrato_id):
     contrato = get_object_or_404(Contrato, id=contrato_id)
-    contrato.aprovado = True
-    contrato.save()
-    messages.success(request, "Orçamento aprovado com sucesso!")
+    
+    # Garantir que o orçamento só pode ser aprovado se a solicitação ainda não tiver um orçamento aprovado
+    if not contrato.solicitacao.contrato_set.filter(aprovado=True).exists():
+        # Desabilitar a aprovação para todos os outros orçamentos desta solicitação
+        contrato.solicitacao.contrato_set.update(aprovado=False)
+
+        # Agora, aprovar o orçamento escolhido
+        contrato.aprovado = True
+        contrato.save()
+        messages.success(request, "Orçamento aprovado com sucesso!")
+    else:
+        messages.warning(request, "Já existe um orçamento aprovado para esta solicitação.")
+    
     return redirect('minhas_solicitacoes')
+

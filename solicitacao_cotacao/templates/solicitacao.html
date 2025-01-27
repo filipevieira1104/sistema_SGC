@@ -10,10 +10,11 @@
             <script>
                 // Exibe o SweetAlert2 quando há uma mensagem de sucesso
                 Swal.fire({
-                    title: 'Sucesso!',
-                    text: '{{ message }}',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
+                position: "top-end",
+                icon: "success",
+                title: "{{ message }}",
+                showConfirmButton: false,
+                timer: 1500
                 });
             </script>
         {% endfor %}

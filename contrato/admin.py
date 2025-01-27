@@ -4,8 +4,9 @@ from notificacao.models import Notificacao
 from .models import Contrato
 
 class ContratoAdmin(admin.ModelAdmin):
-    list_display = ['id', 'solicitacao', 'fornecedor', 'valor_proposta', 'data_contrato']
+    list_display = ['id', 'solicitacao', 'fornecedor', 'valor_proposta', 'data_contrato', 'aprovado']
     search_fields = ['fornecedor__nome', 'solicitacao__titulo']
+    list_filter = ['aprovado']
 
     def save_model(self, request, obj, form, change):
         # Salva o contrato normalmente
